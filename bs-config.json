@@ -1,0 +1,6 @@
+{
+  "port": 8000,
+  "files": ["./src/**/*.{html,htm,css,js}"],
+  "watchOptions": { "ignored": "node_modules" },
+  "server": { "baseDir": "./public" }
+}

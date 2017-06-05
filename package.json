@@ -1,0 +1,12 @@
+{
+  "name": "3GG",
+  "version": "1.0.0",
+  "main": "app.module.js",
+  "repository": "https://github.com/tomkreppart/3D-Golf-Globe.git",
+  "author": "Tom Krepp <tommykrepp@aol.com>",
+  "license": "MIT",
+  "dependencies": {
+    "angular": "^1.6.4",
+    "webpack": "^2.6.1"
+  }
+}
