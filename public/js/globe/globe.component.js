@@ -12,8 +12,15 @@
       const vm = this
 
       vm.$onInit = onInit
+      vm.earthDoneLoading = false
 
       function onInit() {
+          globeRender()
+      }
+
+
+
+      function globeRender() {
         var renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
         renderer.setSize( window.innerWidth, window.innerHeight );
         // document.getElementById("globe").append( renderer.domElement )
@@ -270,6 +277,5 @@
           })
         })
       }
-
     }
 }());
