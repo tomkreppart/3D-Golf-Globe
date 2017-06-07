@@ -1,4 +1,10 @@
+/****** NG-CLOAK ******/
 
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+/****** LOADER ******/
 
 .loader-bg {
   height: 100vh;
@@ -29,6 +35,7 @@
   top: 0%;
   animation: rotate-one 1s linear infinite;
   border-bottom: 3px solid #EFEFFA;
+  z-index: 10000;
 }
 
 .inner.two {
@@ -36,6 +43,7 @@
   top: 0%;
   animation: rotate-two 1s linear infinite;
   border-right: 3px solid #EFEFFA;
+  z-index: 10000;
 }
 
 .inner.three {
