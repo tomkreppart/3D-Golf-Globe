@@ -110,9 +110,12 @@
               //		add Earth Container and make it move					//
               //////////////////////////////////////////////////////////////////////////////////
 
+
+
               var containerEarth	= new THREE.Object3D()
               // containerEarth.rotateZ(-23.4 * Math.PI/180)
               containerEarth.position.z	= 0
+              containerEarth.rotateOnAxis(new THREE.Vector3(0.0, 1.0, 0), -Math.PI/2)
               scene.add(containerEarth)
 
 
@@ -140,7 +143,7 @@
 
 
               var createEarthCloud	= function() {
-                var geometry	= new THREE.SphereGeometry(0.503, 32, 32)
+                var geometry	= new THREE.SphereGeometry(0.505, 32, 32)
                 var material	= new THREE.MeshPhongMaterial({
                   map		: THREE.ImageUtils.loadTexture('/js/globe/images/fair_clouds_4k.png'),
                   // side		: THREE.DoubleSide,
@@ -150,6 +153,92 @@
                 var mesh	= new THREE.Mesh(geometry, material)
                 return mesh
               }
+
+              //////////////////////////////////////////////////////////////////////////////////
+              //		add Night Lights				//
+              //////////////////////////////////////////////////////////////////////////////////
+              var createNightLights	= function(){
+                var vertexShader	= [
+                  'varying vec2 vUv;',
+                  'varying vec3 vPosition;',
+                  'void main()',
+                  '{',
+                    'vUv = uv;',
+                    'vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );',
+                    'gl_Position = projectionMatrix * mvPosition;',
+                    'vPosition = position;',
+                  '}'
+                ].join('\n')
+                var fragmentShader	= [
+                  'uniform sampler2D texture;',
+                  'varying vec2 vUv;',
+                  'varying vec3 vPosition;',
+                  'uniform vec3 uSplit;',
+
+                  'void main( void ) {',
+                    'vec3 color1 = texture2D(texture, vUv).rgb;',
+                    'gl_FragColor = vec4(color1, dot(uSplit, vPosition) * 3.0);',
+                    //'gl_FragColor = vec4(dot(uSplit, vPosition) * 2.0, 0, 0, 1);',
+                  '}',
+                ].join('\n')
+
+                const textureLoader = new THREE.TextureLoader()
+
+                const group = new THREE.Group()
+                scene.add(group)
+
+                const uTexture1 = {
+                	texture: { value: textureLoader.load("/js/globe/images/earthlights10k.jpg") },
+                	uSplit: { value: new THREE.Vector3(1, 0, 0) },
+                }
+                uTexture1.texture.value.wrapS = uTexture1.texture.value.wrapT = THREE.RepeatWrapping;
+                const material1 = new THREE.ShaderMaterial({
+                	uniforms: uTexture1,
+                	vertexShader: vertexShader,
+                	fragmentShader: fragmentShader,
+                	transparent: true,
+                });
+                const mesh1 = new THREE.Mesh( new THREE.SphereGeometry( 0.502, 32, 32 ), material1 )
+                mesh1.rotateOnAxis(new THREE.Vector3(0.0, 1.0, 0), -Math.PI/2)
+                group.add(mesh1)
+
+                // const uTexture2 = {
+                // 	texture: { value: textureLoader.load("/js/globe/images/earthlights10k.jpg") },
+                // 	uSplit: { value: new THREE.Vector3(0, 0, 1) },
+                // }
+                // uTexture2.texture.value.wrapS = uTexture2.texture.value.wrapT = THREE.RepeatWrapping;
+                // const material2 = new THREE.ShaderMaterial({
+                // 	uniforms: uTexture2,
+                // 	vertexShader: vertexShader,
+                // 	fragmentShader: fragmentShader,
+                // 	transparent: true,
+                // });
+                // const mesh2 = new THREE.Mesh( new THREE.SphereGeometry( 0.502, 32, 32 ), material2 )
+                // // mesh2.rotateOnAxis(new THREE.Vector3(0.0, 1.0, 0), Math.PI/100)
+                // group.add(mesh2)
+
+                // const spotLight = new THREE.SpotLight( 0xffffff );
+                // spotLight.position.set(0, 0, -20);
+                //
+                // spotLight.shadow.camera.near = 500
+                // spotLight.shadow.camera.far = 4000
+                // spotLight.shadow.camera.fov = 30
+                // spotLight.target = mesh1
+
+                // scene.add( spotLight );
+                // scene.add(new THREE.SpotLightHelper(spotLight))
+
+                onRenderFcts.push(function(delta, now){
+                  group.rotation.y += 1/32 * delta;
+                  material1.uniforms.uSplit.value = material1.uniforms.uSplit.value.applyAxisAngle(new THREE.Vector3(0.0, 1.0, 0), (1/32 * delta)*-1)
+                  // material2.uniforms.uSplit.value = material2.uniforms.uSplit.value.applyAxisAngle(new THREE.Vector3(0.0, 1.0, 0), Math.PI/100)
+                })
+              }
+
+              var nightMesh	= createNightLights()
+              scene.add(nightMesh)
+
+
 
               //////////////////////////////////////////////////////////////////////////////////
               //		add Earth Atmosphere				//
@@ -279,3 +368,50 @@
     angular.module('app').directive('ngGlobe', ngGlobe);
 
 }());
+
+
+// function calcPosFromLatLonRad(lat,lon,radius){
+//
+// var phi   = (90-lat)*(Math.PI/180);
+// var theta = (lon+180)*(Math.PI/180);
+//
+// x = -((radius) * Math.sin(phi)*Math.cos(theta));
+// z = ((radius) * Math.sin(phi)*Math.sin(theta));
+// y = ((radius) * Math.cos(phi));
+//
+//
+// 	console.log([x,y,z]);
+//    return [x,y,z];
+// }
+
+
+// var createDataPoints = function(){
+//
+// meshes=[];
+// for(var i = 0 ; i < 10 ; i++){
+//
+// 	var geometry	= new THREE.SphereGeometry(0.025, 20, 20)
+// 	var material	= new THREE.MeshBasicMaterial({
+// 		color: new THREE.Color('white')
+// 	})
+// 	var mesh	= new THREE.Mesh(geometry, material)
+// 	meshes.push(mesh);
+// }
+
+
+// latlons = [[40.7142700,-74.0059700], [52.5243700,13.4105300]];
+// function addPoints(){
+//  var meshes = createDataPoints();
+//  for(var i = 0; i< meshes.length; i++ ){
+//    mesh = meshes[i];
+//  currentMesh.add(mesh)
+//
+//  latlon=latlons[Math.floor(Math.random()*latlons.length)];
+//
+//  latlonpoint = calcPosFromLatLonRad(latlon[0],latlon[1], 0.5);
+//  mesh.position = new THREE.Vector3(latlonpoint[0],latlonpoint[1],latlonpoint[2]);
+//  }
+//
+// }
+//
+// addPoints();
