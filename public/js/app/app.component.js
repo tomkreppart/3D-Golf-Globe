@@ -7,21 +7,19 @@
       controller: controller
     })
 
-    function controller() {
+    controller.$inject = ['searchService']
+
+    function controller(searchService) {
+      const vm = this
+
+      vm.$onInit = onInit
+      vm.searchService = searchService
+
+      function onInit() {
+        searchService.getAllCourses().then(function (response) {
+          vm.courses = response.data
+          console.log(vm.courses);
+        })
+      }
     }
-    // controller.$inject = ['searchService']
-    //
-    // function controller(searchService) {
-    //   const vm = this
-    //   vm.$onInit = onInit
-    //
-    //   vm.searchService = searchService
-    //
-    //   function onInit() {
-    //     searchService.getCharacters().then(function (response) {
-    //       vm.characters = response.data
-    //       console.log(vm.characters);
-    //     })
-    //   }
-    // }
 }());

@@ -15,7 +15,7 @@
             template: '',
             // controller: controller,
             link: function ($scope, element, attrs) {
-              console.log(element);
+              // console.log(element);
               var renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
               renderer.setSize( window.innerWidth, window.innerHeight );
               // document.getElementById("globe").append( renderer.domElement )
@@ -117,6 +117,7 @@
               containerEarth.position.z	= 0
               containerEarth.rotateOnAxis(new THREE.Vector3(0.0, 1.0, 0), -Math.PI/2)
               scene.add(containerEarth)
+
 
 
               var createEarth	= function(){
@@ -330,6 +331,63 @@
               onRenderFcts.push(function(delta, now){
                 earthCloud.rotation.y += 1/24 * delta;
               })
+              //////////////////////////////////////////////////////////////////////////////////
+              //		Data Points							//
+              //////////////////////////////////////////////////////////////////////////////////
+              function calcPosFromLatLonRad(lat,lon,radius,height){
+
+                var phi   = (90-lat)*(Math.PI/180);
+                var theta = (lon+180)*(Math.PI/180);
+
+                x = -((radius+height) * Math.sin(phi)*Math.cos(theta));
+                y = ((radius+height) * Math.cos(phi));
+                z = ((radius+height) * Math.sin(phi)*Math.sin(theta));
+
+
+                // console.log([x,y,z]);
+                return [x,y,z];
+              }
+
+              var createRandomPoints	= function(){
+
+                meshes=[];
+                for(var i = 0 ; i < 10 ; i++){
+
+                	var geometry	= new THREE.SphereGeometry(0.025, 20, 20)
+                	var material	= new THREE.MeshBasicMaterial({
+                		color: new THREE.Color('white')
+                	})
+                	var mesh	= new THREE.Mesh(geometry, material)
+                	meshes.push(mesh);
+                }
+                	return meshes
+              }
+
+              // var mesh	= createEarth()
+              // scene.add(mesh)
+              // currentMesh	= earthMesh
+
+              latlons = [[36.5802249,-121.9741049], [-37.9678325,145.0253219]];
+
+              function addPoints(){
+                var meshes = createRandomPoints();
+                for(var i = 0; i< meshes.length; i++ ) {
+                  var point = meshes[i];
+                  earthMesh.add(point)
+
+                  let latlon = latlons[Math.floor(Math.random()*latlons.length)];
+
+                  latlonpoint = calcPosFromLatLonRad(latlon[0],latlon[1], 0.5, 0.01);
+                  point.position.x = latlonpoint[0]
+                  point.position.y = latlonpoint[1]
+                  point.position.z = latlonpoint[2]
+                  // new THREE.Vector3(latlonpoint[0],latlonpoint[1],latlonpoint[2]);
+                  // console.log(latlonpoint);
+                  // console.log(point.position.x);
+                }
+              }
+
+              addPoints();
               //////////////////////////////////////////////////////////////////////////////////
               //		Camera Controls							//
               //////////////////////////////////////////////////////////////////////////////////
