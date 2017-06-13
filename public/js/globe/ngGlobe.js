@@ -351,17 +351,27 @@
               var createRandomPoints	= function(){
 
                 meshes=[];
+
+                var spriteMap = new THREE.TextureLoader().load( '/js/globe/images/marker-light-green.png' );
+                var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xffffff } );
+                spriteMaterial.depthTest = false
+
                 for(var i = 0 ; i < 10 ; i++){
 
-                	var geometry	= new THREE.SphereGeometry(0.025, 20, 20)
-                	var material	= new THREE.MeshBasicMaterial({
-                		color: new THREE.Color('white')
-                	})
-                	var mesh	= new THREE.Mesh(geometry, material)
-                	meshes.push(mesh);
+                  var sprite = new THREE.Sprite( spriteMaterial );
+                  // sprite.material.rotation =
+                  sprite.scale.set(0.02, 0.075, 1)
+
+                  meshes.push(sprite)
+
                 }
                 	return meshes
               }
+
+              // onRenderFcts.push(function(delta, now){
+              // var zDepth = sprite.getWorldPosition()
+              // console.log(zDepth);
+              // })
 
               // var mesh	= createEarth()
               // scene.add(mesh)
@@ -377,13 +387,12 @@
 
                   let latlon = latlons[Math.floor(Math.random()*latlons.length)];
 
-                  latlonpoint = calcPosFromLatLonRad(latlon[0],latlon[1], 0.5, 0.01);
+                  latlonpoint = calcPosFromLatLonRad(latlon[0],latlon[1], 0.5, 0);
                   point.position.x = latlonpoint[0]
                   point.position.y = latlonpoint[1]
                   point.position.z = latlonpoint[2]
-                  // new THREE.Vector3(latlonpoint[0],latlonpoint[1],latlonpoint[2]);
-                  // console.log(latlonpoint);
-                  // console.log(point.position.x);
+
+                  // point.lookAt(0,0,0)
                 }
               }
 
@@ -399,7 +408,9 @@
               //////////////////////////////////////////////////////////////////////////////////
               onRenderFcts.push(function(){
                 renderer.render( scene, camera );
-                // console.log(renderer.domElement.toDataURL());
+                // earthMesh.updateMatrixWorld();
+                // var vector = new THREE.Vector3();
+                // console.log(vector.setFromMatrixPosition( earthMesh.matrixWorld ));
                 controls.update()
               })
 
