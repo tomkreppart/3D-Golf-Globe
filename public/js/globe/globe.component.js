@@ -8,19 +8,22 @@
     })
 
 
-    function controller() {
+    controller.$inject = ['searchService']
 
+    function controller(searchService) {
       const vm = this
 
       vm.$onInit = onInit
-      // vm.earthDoneLoading = false
-      // vm.searchService = searchService
+      vm.searchService = searchService
 
       function onInit() {
-
+        searchService.getAllCourses().then(function (response) {
+          vm.courses = response.data
+          vm.latlons = vm.courses.map(function(course) {
+            return [parseFloat(course.lat), parseFloat(course.lng)]
+          })
+          console.log(vm.latlons);
+        })
       }
-
-
-
     }
 }());

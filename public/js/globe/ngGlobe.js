@@ -1,21 +1,22 @@
 (function () {
 
-    // var controller = function ($scope) {
-    //     $scope.myVal = $scope.title;
-    // };
-    //
-    // controller.$inject = ['$scope'];
+    var controller = function ($scope) {
+    //     $scope.allCourseInfo = ;
+        // console.log($scope.courses);
+    };
+
+    controller.$inject = ['$scope'];
 
     var ngGlobe = function () {
         return {
             restrict: 'EA', //E = element, A = attribute, C = class, M = comment
             scope: {
-                title: '@' //@ reads attribute value, = provides two-way binding, & works w/ functions
+                latlons: '=' //@ reads attribute value, = provides two-way binding, & works w/ functions
             },
             template: '',
             // controller: controller,
             link: function ($scope, element, attrs) {
-              // console.log(element);
+              console.log($scope);
               var renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
               renderer.setSize( window.innerWidth, window.innerHeight );
               // document.getElementById("globe").append( renderer.domElement )
@@ -356,7 +357,7 @@
                 var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xffffff } );
                 spriteMaterial.depthTest = false
 
-                for(var i = 0 ; i < 10 ; i++){
+                for(var i = 0 ; i < 51 ; i++){
 
                   var sprite = new THREE.Sprite( spriteMaterial );
                   // sprite.material.rotation =
@@ -377,11 +378,13 @@
               // scene.add(mesh)
               // currentMesh	= earthMesh
 
-              latlons = [[36.5802249,-121.9741049], [-37.9678325,145.0253219]];
+
+              // latlons = [[36.5802249,-121.9741049], [-37.9678325,145.0253219]];
 
               function addPoints(){
+                latlons = $scope.latlons
                 var meshes = createRandomPoints();
-                for(var i = 0; i< meshes.length; i++ ) {
+                for(var i = 0; i < meshes.length; i++ ) {
                   var point = meshes[i];
                   earthMesh.add(point)
 
@@ -396,7 +399,11 @@
                 }
               }
 
-              addPoints();
+              $scope.$watch("latlons", function(newVal, oldVal) {
+                if(newVal && newVal.length) {
+                  addPoints()
+                }
+              });
               //////////////////////////////////////////////////////////////////////////////////
               //		Camera Controls							//
               //////////////////////////////////////////////////////////////////////////////////
