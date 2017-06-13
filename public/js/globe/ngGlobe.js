@@ -11,12 +11,13 @@
         return {
             restrict: 'EA', //E = element, A = attribute, C = class, M = comment
             scope: {
-                latlons: '=' //@ reads attribute value, = provides two-way binding, & works w/ functions
+                courses: '='
+                //@ reads attribute value, = provides two-way binding, & works w/ functions
             },
             template: '',
             // controller: controller,
             link: function ($scope, element, attrs) {
-              console.log($scope);
+
               var renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
               renderer.setSize( window.innerWidth, window.innerHeight );
               // document.getElementById("globe").append( renderer.domElement )
@@ -332,9 +333,51 @@
               onRenderFcts.push(function(delta, now){
                 earthCloud.rotation.y += 1/24 * delta;
               })
+
+              //////////////////////////////////////////////////////////////////////////////////
+              //		Markers Text						//
+              //////////////////////////////////////////////////////////////////////////////////
+
+              function makeTextSprite( message, parameters ) {
+
+                  function roundRect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r); ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h); ctx.lineTo(x + r, y + h); ctx.quadraticCurveTo(x, y + h, x, y + h - r); ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath(); ctx.fill(); ctx.stroke(); }
+
+                  if ( parameters === undefined ) parameters = {};
+                  var fontface = parameters.hasOwnProperty("fontface") ? parameters["fontface"] : "Arial";
+                  var fontsize = parameters.hasOwnProperty("fontsize") ? parameters["fontsize"] : 18;
+                  var borderThickness = parameters.hasOwnProperty("borderThickness") ? parameters["borderThickness"] : 4;
+                  var borderColor = parameters.hasOwnProperty("borderColor") ?parameters["borderColor"] : { r:0, g:0, b:0, a:1.0 };
+                  var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
+                  var textColor = parameters.hasOwnProperty("textColor") ?parameters["textColor"] : { r:0, g:0, b:0, a:1.0 };
+
+                  var canvas = document.createElement('canvas');
+                  var context = canvas.getContext('2d');
+                  context.font = "Bold " + fontsize + "px " + fontface;
+                  var metrics = context.measureText( message );
+                  var textWidth = metrics.width;
+
+                  context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + "," + backgroundColor.b + "," + backgroundColor.a + ")";
+                  context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + "," + borderColor.b + "," + borderColor.a + ")";
+
+                  context.lineWidth = borderThickness;
+                  roundRect(context, borderThickness/2, borderThickness/2, (textWidth + borderThickness) * 1.1, fontsize * 1.4 + borderThickness, 8);
+
+                  context.fillStyle = "rgba("+textColor.r+", "+textColor.g+", "+textColor.b+", 1.0)";
+                  context.fillText( message, borderThickness, fontsize + borderThickness);
+
+                  var texture = new THREE.Texture(canvas)
+                  texture.needsUpdate = true;
+
+                  var spriteMaterial = new THREE.SpriteMaterial( { map: texture, useScreenCoordinates: false } );
+                  var sprite = new THREE.Sprite( spriteMaterial );
+                  sprite.scale.set(0.5 * fontsize, 0.25 * fontsize, 0.75 * fontsize);
+                  return sprite;
+              }
+
               //////////////////////////////////////////////////////////////////////////////////
               //		Data Points							//
               //////////////////////////////////////////////////////////////////////////////////
+
               function calcPosFromLatLonRad(lat,lon,radius,height){
 
                 var phi   = (90-lat)*(Math.PI/180);
@@ -344,8 +387,6 @@
                 y = ((radius+height) * Math.cos(phi));
                 z = ((radius+height) * Math.sin(phi)*Math.sin(theta));
 
-
-                // console.log([x,y,z]);
                 return [x,y,z];
               }
 
@@ -360,46 +401,34 @@
                 for(var i = 0 ; i < 51 ; i++){
 
                   var sprite = new THREE.Sprite( spriteMaterial );
-                  // sprite.material.rotation =
                   sprite.scale.set(0.02, 0.075, 1)
-
                   meshes.push(sprite)
 
                 }
                 	return meshes
               }
 
-              // onRenderFcts.push(function(delta, now){
-              // var zDepth = sprite.getWorldPosition()
-              // console.log(zDepth);
-              // })
-
-              // var mesh	= createEarth()
-              // scene.add(mesh)
-              // currentMesh	= earthMesh
-
-
-              // latlons = [[36.5802249,-121.9741049], [-37.9678325,145.0253219]];
-
               function addPoints(){
-                latlons = $scope.latlons
+                var courses = $scope.courses
                 var meshes = createRandomPoints();
-                for(var i = 0; i < meshes.length; i++ ) {
+                for(var i = 0; i < courses.length; i++ ) {
+
                   var point = meshes[i];
                   earthMesh.add(point)
+                  let course = courses[i];
+                  // console.log(course);
+                  // point.userData = course
 
-                  let latlon = latlons[Math.floor(Math.random()*latlons.length)];
-
-                  latlonpoint = calcPosFromLatLonRad(latlon[0],latlon[1], 0.5, 0);
+                  latlonpoint = calcPosFromLatLonRad(
+                    parseFloat(course.lat),parseFloat(course.lng), 0.5, 0
+                  );
                   point.position.x = latlonpoint[0]
                   point.position.y = latlonpoint[1]
                   point.position.z = latlonpoint[2]
-
-                  // point.lookAt(0,0,0)
                 }
               }
 
-              $scope.$watch("latlons", function(newVal, oldVal) {
+              $scope.$watch("courses", function(newVal, oldVal) {
                 if(newVal && newVal.length) {
                   addPoints()
                 }
@@ -411,19 +440,26 @@
               var controls = new THREE.OrbitControls(camera, renderer.domElement)
 
               //////////////////////////////////////////////////////////////////////////////////
+              //		Update							//
+              //////////////////////////////////////////////////////////////////////////////////
+
+                function update() {
+                	controls.update();
+                }
+
+              //////////////////////////////////////////////////////////////////////////////////
               //		render the scene						//
               //////////////////////////////////////////////////////////////////////////////////
+
               onRenderFcts.push(function(){
                 renderer.render( scene, camera );
-                // earthMesh.updateMatrixWorld();
-                // var vector = new THREE.Vector3();
-                // console.log(vector.setFromMatrixPosition( earthMesh.matrixWorld ));
-                controls.update()
+                update()
               })
 
               //////////////////////////////////////////////////////////////////////////////////
               //		loop runner							//
               //////////////////////////////////////////////////////////////////////////////////
+
               var lastTimeMsec= null
               requestAnimationFrame(function animate(nowMsec){
                 // keep looping
@@ -444,50 +480,3 @@
     angular.module('app').directive('ngGlobe', ngGlobe);
 
 }());
-
-
-// function calcPosFromLatLonRad(lat,lon,radius){
-//
-// var phi   = (90-lat)*(Math.PI/180);
-// var theta = (lon+180)*(Math.PI/180);
-//
-// x = -((radius) * Math.sin(phi)*Math.cos(theta));
-// z = ((radius) * Math.sin(phi)*Math.sin(theta));
-// y = ((radius) * Math.cos(phi));
-//
-//
-// 	console.log([x,y,z]);
-//    return [x,y,z];
-// }
-
-
-// var createDataPoints = function(){
-//
-// meshes=[];
-// for(var i = 0 ; i < 10 ; i++){
-//
-// 	var geometry	= new THREE.SphereGeometry(0.025, 20, 20)
-// 	var material	= new THREE.MeshBasicMaterial({
-// 		color: new THREE.Color('white')
-// 	})
-// 	var mesh	= new THREE.Mesh(geometry, material)
-// 	meshes.push(mesh);
-// }
-
-
-// latlons = [[40.7142700,-74.0059700], [52.5243700,13.4105300]];
-// function addPoints(){
-//  var meshes = createDataPoints();
-//  for(var i = 0; i< meshes.length; i++ ){
-//    mesh = meshes[i];
-//  currentMesh.add(mesh)
-//
-//  latlon=latlons[Math.floor(Math.random()*latlons.length)];
-//
-//  latlonpoint = calcPosFromLatLonRad(latlon[0],latlon[1], 0.5);
-//  mesh.position = new THREE.Vector3(latlonpoint[0],latlonpoint[1],latlonpoint[2]);
-//  }
-//
-// }
-//
-// addPoints();

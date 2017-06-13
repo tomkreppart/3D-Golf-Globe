@@ -11,6 +11,6 @@
 
      $stateProvider
        .state({ name: 'globe', url: '/', component: 'globe' })
-       .state({ name: 'courses', url: '/courses', component: 'courses' })
+       .state({ name: 'courses', url: '/courses/:id', component: 'courses' })
    }
 }());
