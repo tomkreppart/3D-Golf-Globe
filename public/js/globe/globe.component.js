@@ -7,21 +7,20 @@
       controller: controller
     })
 
+
     function controller() {
 
       const vm = this
 
       vm.$onInit = onInit
-      vm.earthDoneLoading = false
+      // vm.earthDoneLoading = false
+      // vm.searchService = searchService
 
       function onInit() {
-          // globeRender()
+
       }
 
 
 
-      // function globeRender() {
-      //
-      // }
     }
 }());

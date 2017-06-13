@@ -15,7 +15,7 @@
             template: '',
             // controller: controller,
             link: function ($scope, element, attrs) {
-              console.log(element);
+              // console.log(element);
               var renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
               renderer.setSize( window.innerWidth, window.innerHeight );
               // document.getElementById("globe").append( renderer.domElement )
@@ -117,6 +117,7 @@
               containerEarth.position.z	= 0
               containerEarth.rotateOnAxis(new THREE.Vector3(0.0, 1.0, 0), -Math.PI/2)
               scene.add(containerEarth)
+
 
 
               var createEarth	= function(){
@@ -331,6 +332,72 @@
                 earthCloud.rotation.y += 1/24 * delta;
               })
               //////////////////////////////////////////////////////////////////////////////////
+              //		Data Points							//
+              //////////////////////////////////////////////////////////////////////////////////
+              function calcPosFromLatLonRad(lat,lon,radius,height){
+
+                var phi   = (90-lat)*(Math.PI/180);
+                var theta = (lon+180)*(Math.PI/180);
+
+                x = -((radius+height) * Math.sin(phi)*Math.cos(theta));
+                y = ((radius+height) * Math.cos(phi));
+                z = ((radius+height) * Math.sin(phi)*Math.sin(theta));
+
+
+                // console.log([x,y,z]);
+                return [x,y,z];
+              }
+
+              var createRandomPoints	= function(){
+
+                meshes=[];
+
+                var spriteMap = new THREE.TextureLoader().load( '/js/globe/images/marker-light-green.png' );
+                var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xffffff } );
+                spriteMaterial.depthTest = false
+
+                for(var i = 0 ; i < 10 ; i++){
+
+                  var sprite = new THREE.Sprite( spriteMaterial );
+                  // sprite.material.rotation =
+                  sprite.scale.set(0.02, 0.075, 1)
+
+                  meshes.push(sprite)
+
+                }
+                	return meshes
+              }
+
+              // onRenderFcts.push(function(delta, now){
+              // var zDepth = sprite.getWorldPosition()
+              // console.log(zDepth);
+              // })
+
+              // var mesh	= createEarth()
+              // scene.add(mesh)
+              // currentMesh	= earthMesh
+
+              latlons = [[36.5802249,-121.9741049], [-37.9678325,145.0253219]];
+
+              function addPoints(){
+                var meshes = createRandomPoints();
+                for(var i = 0; i< meshes.length; i++ ) {
+                  var point = meshes[i];
+                  earthMesh.add(point)
+
+                  let latlon = latlons[Math.floor(Math.random()*latlons.length)];
+
+                  latlonpoint = calcPosFromLatLonRad(latlon[0],latlon[1], 0.5, 0);
+                  point.position.x = latlonpoint[0]
+                  point.position.y = latlonpoint[1]
+                  point.position.z = latlonpoint[2]
+
+                  // point.lookAt(0,0,0)
+                }
+              }
+
+              addPoints();
+              //////////////////////////////////////////////////////////////////////////////////
               //		Camera Controls							//
               //////////////////////////////////////////////////////////////////////////////////
 
@@ -341,7 +408,9 @@
               //////////////////////////////////////////////////////////////////////////////////
               onRenderFcts.push(function(){
                 renderer.render( scene, camera );
-                // console.log(renderer.domElement.toDataURL());
+                // earthMesh.updateMatrixWorld();
+                // var vector = new THREE.Vector3();
+                // console.log(vector.setFromMatrixPosition( earthMesh.matrixWorld ));
                 controls.update()
               })
 

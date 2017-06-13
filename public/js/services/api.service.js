@@ -7,14 +7,14 @@
     SearchService.$inject = ['$http']
 
     function SearchService($http) {
-      // this.search = ""
-      //
-      // this.getAllCourses = () => {
-      //   return $http.get('https://rick-and-morty-quotes.herokuapp.com/api/characters')
-      // }
-      //
-      // this.getOneCourse = (id) => {
-      //   return $http.get('https://rick-and-morty-quotes.herokuapp.com/api/characters/' + id)
-      // }
+      this.search = ""
+
+      this.getAllCourses = () => {
+        return $http.get('https://golf-globe-3d.herokuapp.com/api/courses')
+      }
+      
+      this.getOneCourse = (id) => {
+        return $http.get('https://golf-globe-3d.herokuapp.com/api/courses/' + id)
+      }
     }
 }());
