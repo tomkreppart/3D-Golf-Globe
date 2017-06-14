@@ -9,20 +9,40 @@
 /****** COURSE AERIAL ******/
 .courseInfo {
   font-family: "Quicksand";
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  position: absolute;
+  overflow: hidden;
+  display: none;
+  /*background-repeat: repeat;
+  background-image: url("../js/globe/images/grass-texture.jpg");*/
+}
+
+
+.imgBox {
+  text-align: center;
 }
 
 .aerialImg {
-  height: 100vh;
-  width: auto;
-  overflow: hidden;
+  height: 102vh;
 }
 
-.name {
+.header {
   font-size: 60px;
+  background-color: hsla(0, 0%, 0%, 0.5);
 }
 
 .ranking {
   float: right;
+}
+
+.button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 10px;
 }
 
 /****** NG-CLOAK ******/

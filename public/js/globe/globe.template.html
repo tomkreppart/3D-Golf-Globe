@@ -3,8 +3,10 @@
 <ng-globe courses="$ctrl.courses" id="globe"></ng-globe>
 
 <div class="courseInfo">
-  <img class="aerialImg" ng-src="{{$ctrl.course.image}}"/>
-  <div class="name">
+  <div class="imgBox">
+    <img class="aerialImg" ng-src="{{$ctrl.course.image}}"/>
+  </div>
+  <div class="header">
     {{$ctrl.course.name}}<span class="ranking">#{{$ctrl.course.ranking}}</span>
   </div>
   <div class="location">{{$ctrl.course.city}}, {{$ctrl.course.stateOrProvince}}, {{$ctrl.course.country}}</div>
@@ -14,4 +16,5 @@
   <div class="architects">{{$ctrl.course.architects}}</div>
   <div class="privateOrPublic">{{$ctrl.course.privateOrPublic}}</div>
   <div class="description">{{$ctrl.course.description}}</div>
+  <button class="button" onclick="document.querySelector('.courseInfo').style.display = 'none'">x</button>
 </div>

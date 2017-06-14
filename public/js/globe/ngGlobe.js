@@ -450,10 +450,18 @@
 
                   meshes.forEach(mesh => {
                     domEvents.addEventListener(mesh, 'mousedown', function(event){
-                      // event.stopPropagation()
+
+                      event.stopPropagation()
                       console.log("I clicked mesh");
-                      if(event.target.name == "point")
-                      searchService.setCourse(event.target.userData)
+
+                      if(event.target.name == "point") {
+                        searchService.setCourse(event.target.userData)
+                        document.querySelector('.courseInfo').style.display = 'block'
+                        // document.getElementById("MyElement").classList.add('MyClass');
+                        // document.getElementById("MyElement").classList.remove('MyClass');
+                      } else {
+                        return
+                      }
                     }, false)
                   })
 
