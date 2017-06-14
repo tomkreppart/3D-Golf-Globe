@@ -23,7 +23,7 @@
               // document.getElementById("globe").append( renderer.domElement )
               element[0].appendChild( renderer.domElement );
               renderer.shadowMap.enabled	= true
-              document.addEventListener('mousedown', onDocumentMouseDown, false)
+              // document.addEventListener('mousedown', onDocumentMouseDown, false)
 	            window.addEventListener( 'resize', onWindowResize, false )
 
               var onRenderFcts= [];
@@ -396,12 +396,25 @@
                 var spriteMap = new THREE.TextureLoader().load( '/js/globe/images/marker-light-green.png' );
                 var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xffffff } );
                 spriteMaterial.depthTest = false
+                // var geometry = new THREE.SphereGeometry( 0.01, 8, 8);
+                var geometry = new THREE.BoxGeometry(0.02, 0.075, 0.02);
+                var material = new THREE.MeshBasicMaterial( {color: 0x0000ff, transparent: true, opacity: 0} );
+
 
                 for(var i = 0 ; i < 51 ; i++){
-
+                  var cube = new THREE.Mesh( geometry, material );
                   var sprite = new THREE.Sprite( spriteMaterial );
                   sprite.scale.set(0.02, 0.075, 1)
-                  meshes.push(sprite)
+                  onRenderFcts.push(function(delta, now){
+                    cube.lookAt( camera.position );
+                  })
+
+                  cube.add(sprite)
+
+
+                  // sprite.add(box)
+                  meshes.push(cube)
+
 
                 }
                 	return meshes
@@ -417,6 +430,7 @@
                   let course = courses[i];
                   // console.log(course);
                   point.userData = course
+                  // console.log(course);
                   point.name = "point"
 
                   latlonpoint = calcPosFromLatLonRad(
@@ -426,19 +440,27 @@
                   point.position.y = latlonpoint[1]
                   point.position.z = latlonpoint[2]
                 }
+                return meshes
               }
 
               $scope.$watch("courses", function(newVal, oldVal) {
                 if(newVal && newVal.length) {
-                  addPoints()
+                  var meshes = addPoints()
                   var domEvents	= new THREEx.DomEvents(camera, renderer.domElement)
 
-                  var meshes = createRandomPoints();
+                  meshes.forEach(mesh => {
+                    if (earthMesh) {
+                      console.log("earth Meash")
+                    }
+                    domEvents.addEventListener(mesh, 'mousedown', function(event){
 
-                  domEvents.addEventListener(meshes, 'mousedown', function(event){
-                    console.log("I clicked mesh");
-                    console.log(event.target);
-                  }, false)
+                      // event.stopPropagation()
+                      console.log("I clicked mesh");
+                      if(event.target.name == "point")
+                      console.log(event.target.userData);
+                    }, false)
+                  })
+
                 }
               });
 
@@ -448,24 +470,24 @@
 
 
 
-              function onDocumentMouseDown(event) {
-
-              	if (event.target !== renderer.domElement) {
-              		return
-              	}
-                var meshes = createRandomPoints();
-
-                let vector = new THREE.Vector3(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1, 0.5)
-              	let raycaster = new THREE.Raycaster()
-              	// raycaster.setFromCamera(vector, camera)
-
-              	let intersects = raycaster.intersectObjects(meshes, true)
-
-              	if (intersects.length > 0) {
-                  // $state.go('courses', {id: 1})
-
-                }
-              }
+              // function onDocumentMouseDown(event) {
+              //
+              // 	if (event.target !== renderer.domElement) {
+              // 		return
+              // 	}
+              //   var meshes = createRandomPoints();
+              //
+              //   let vector = new THREE.Vector3(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1, 0.5)
+              // 	let raycaster = new THREE.Raycaster()
+              // 	// raycaster.setFromCamera(vector, camera)
+              //
+              // 	let intersects = raycaster.intersectObjects(meshes, true)
+              //
+              // 	if (intersects.length > 0) {
+              //     // $state.go('courses', {id: 1})
+              //
+              //   }
+              // }
 
               //////////////////////////////////////////////////////////////////////////////////
               //		Camera Controls							//
@@ -491,6 +513,7 @@
 
                 function update() {
                 	controls.update();
+                  // cube.update()
                 }
 
               //////////////////////////////////////////////////////////////////////////////////
