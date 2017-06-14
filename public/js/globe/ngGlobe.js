@@ -7,7 +7,8 @@
 
     controller.$inject = ['$scope'];
 
-    var ngGlobe = function ($state) {
+    var ngGlobe = function ($state, searchService) {
+      console.log(searchService);
         return {
             restrict: 'EA', //E = element, A = attribute, C = class, M = comment
             scope: {
@@ -428,10 +429,9 @@
                   var point = meshes[i];
                   earthMesh.add(point)
                   let course = courses[i];
-                  // console.log(course);
                   point.userData = course
-                  // console.log(course);
                   point.name = "point"
+
 
                   latlonpoint = calcPosFromLatLonRad(
                     parseFloat(course.lat),parseFloat(course.lng), 0.5, 0
@@ -449,15 +449,11 @@
                   var domEvents	= new THREEx.DomEvents(camera, renderer.domElement)
 
                   meshes.forEach(mesh => {
-                    if (earthMesh) {
-                      console.log("earth Meash")
-                    }
                     domEvents.addEventListener(mesh, 'mousedown', function(event){
-
                       // event.stopPropagation()
                       console.log("I clicked mesh");
                       if(event.target.name == "point")
-                      console.log(event.target.userData);
+                      searchService.setCourse(event.target.userData)
                     }, false)
                   })
 
