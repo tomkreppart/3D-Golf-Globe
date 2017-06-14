@@ -1,1 +1,15 @@
-<h1>~ Courses ~</h1>
+
+
+<div class="courseInfo">
+  <img class="aerialImg" ng-src="{{$ctrl.course.image}}"/>
+  <div class="name">
+    {{$ctrl.course.name}}<span class="ranking">#{{$ctrl.course.ranking}}</span>
+  </div>
+  <div class="location">{{$ctrl.course.city}}, {{$ctrl.course.stateOrProvince}}, {{$ctrl.course.country}}</div>
+  <div class="yearFounded">{{$ctrl.course.yearFounded}}</div>
+  <div class="par">{{$ctrl.course.par}}</div>
+  <div class="yards">{{$ctrl.course.yards}}</div>
+  <div class="architects">{{$ctrl.course.architects}}</div>
+  <div class="privateOrPublic">{{$ctrl.course.privateOrPublic}}</div>
+  <div class="description">{{$ctrl.course.description}}</div>
+</div>

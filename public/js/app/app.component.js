@@ -18,7 +18,6 @@
       function onInit() {
         searchService.getAllCourses().then(function (response) {
           vm.courses = response.data
-          console.log(vm.courses);
         })
       }
     }

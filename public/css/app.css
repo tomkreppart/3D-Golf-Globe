@@ -1,3 +1,30 @@
+.bodybg {
+  margin: 0px;
+  background-color: #000000;
+  overflow: hidden;
+  width: 100%;
+  height: 100%
+}
+
+/****** COURSE AERIAL ******/
+.courseInfo {
+  font-family: "Quicksand";
+}
+
+.aerialImg {
+  height: 100vh;
+  width: auto;
+  overflow: hidden;
+}
+
+.name {
+  font-size: 60px;
+}
+
+.ranking {
+  float: right;
+}
+
 /****** NG-CLOAK ******/
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {

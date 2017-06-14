@@ -22,7 +22,9 @@
           vm.latlons = vm.courses.map(function(course) {
             return [parseFloat(course.lat), parseFloat(course.lng)]
           })
-          console.log(vm.latlons);
+          vm.courseNames = vm.courses.map(function(course) {
+            return course.name
+          })
         })
       }
     }
