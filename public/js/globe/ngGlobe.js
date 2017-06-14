@@ -7,7 +7,7 @@
 
     controller.$inject = ['$scope'];
 
-    var ngGlobe = function () {
+    var ngGlobe = function ($state) {
         return {
             restrict: 'EA', //E = element, A = attribute, C = class, M = comment
             scope: {
@@ -23,19 +23,18 @@
               // document.getElementById("globe").append( renderer.domElement )
               element[0].appendChild( renderer.domElement );
               renderer.shadowMap.enabled	= true
+              document.addEventListener('mousedown', onDocumentMouseDown, false)
+	            window.addEventListener( 'resize', onWindowResize, false )
 
               var onRenderFcts= [];
+
               var scene	= new THREE.Scene();
+
               var camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 100 );
               camera.position.z = 1.8;
+
               var light	= new THREE.AmbientLight( 0x222222 )
               scene.add( light )
-
-              // var flashlight = new THREE.PointLight( 0xffffff, 0.1, 100, 1);
-              // scene.add( camera );
-              // camera.add(flashlight);
-              // flashlight.position.set(0,0,10);
-              // flashlight.target = camera;
 
 
               //////////////////////////////////////////////////////////////////////////////////
@@ -417,7 +416,8 @@
                   earthMesh.add(point)
                   let course = courses[i];
                   // console.log(course);
-                  // point.userData = course
+                  point.userData = course
+                  point.name = "point"
 
                   latlonpoint = calcPosFromLatLonRad(
                     parseFloat(course.lat),parseFloat(course.lng), 0.5, 0
@@ -431,13 +431,59 @@
               $scope.$watch("courses", function(newVal, oldVal) {
                 if(newVal && newVal.length) {
                   addPoints()
+                  var domEvents	= new THREEx.DomEvents(camera, renderer.domElement)
+
+                  var meshes = createRandomPoints();
+
+                  domEvents.addEventListener(meshes, 'mousedown', function(event){
+                    console.log("I clicked mesh");
+                    console.log(event.target);
+                  }, false)
                 }
               });
+
+              //////////////////////////////////////////////////////////////////////////////////
+              //		Click Handlers							//
+              //////////////////////////////////////////////////////////////////////////////////
+
+
+
+              function onDocumentMouseDown(event) {
+
+              	if (event.target !== renderer.domElement) {
+              		return
+              	}
+                var meshes = createRandomPoints();
+
+                let vector = new THREE.Vector3(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1, 0.5)
+              	let raycaster = new THREE.Raycaster()
+              	// raycaster.setFromCamera(vector, camera)
+
+              	let intersects = raycaster.intersectObjects(meshes, true)
+
+              	if (intersects.length > 0) {
+                  // $state.go('courses', {id: 1})
+
+                }
+              }
+
               //////////////////////////////////////////////////////////////////////////////////
               //		Camera Controls							//
               //////////////////////////////////////////////////////////////////////////////////
 
               var controls = new THREE.OrbitControls(camera, renderer.domElement)
+
+              //////////////////////////////////////////////////////////////////////////////////
+              //		Resize Canvas							//
+              //////////////////////////////////////////////////////////////////////////////////
+
+              function onWindowResize(event) {
+
+                renderer.setSize( window.innerWidth, window.innerHeight )
+                camera.aspect = window.innerWidth / window.innerHeight
+                camera.updateProjectionMatrix()
+
+              }
 
               //////////////////////////////////////////////////////////////////////////////////
               //		Update							//

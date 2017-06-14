@@ -25,7 +25,6 @@
           vm.courseNames = vm.courses.map(function(course) {
             return course.name
           })
-          console.log(vm.courseNames);
         })
       }
     }
