@@ -15,7 +15,8 @@
 
       vm.$onInit = onInit
       vm.searchService = searchService
-
+      vm.course = searchService.currentCourse
+      console.log(vm.course);
       function onInit() {
         searchService.getAllCourses().then(function (response) {
           vm.courses = response.data

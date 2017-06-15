@@ -7,7 +7,8 @@
 
     controller.$inject = ['$scope'];
 
-    var ngGlobe = function ($state) {
+    var ngGlobe = function ($state, searchService) {
+      console.log(searchService);
         return {
             restrict: 'EA', //E = element, A = attribute, C = class, M = comment
             scope: {
@@ -394,20 +395,21 @@
                 meshes=[];
 
                 var spriteMap = new THREE.TextureLoader().load( '/js/globe/images/marker-light-green.png' );
-                var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xffffff } );
-                spriteMaterial.depthTest = false
+
                 // var geometry = new THREE.SphereGeometry( 0.01, 8, 8);
                 var geometry = new THREE.BoxGeometry(0.02, 0.075, 0.02);
                 var material = new THREE.MeshBasicMaterial( {color: 0x0000ff, transparent: true, opacity: 0} );
 
 
                 for(var i = 0 ; i < 51 ; i++){
+                  var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xffffff, transparent: true, opacity: 1 } );
+                  spriteMaterial.depthTest = false
                   var cube = new THREE.Mesh( geometry, material );
                   var sprite = new THREE.Sprite( spriteMaterial );
                   sprite.scale.set(0.02, 0.075, 1)
-                  onRenderFcts.push(function(delta, now){
-                    cube.lookAt( camera.position );
-                  })
+                  // onRenderFcts.push(function(delta, now){
+                  //   cube.lookAt( camera.position );
+                  // })
 
                   cube.add(sprite)
 
@@ -428,10 +430,9 @@
                   var point = meshes[i];
                   earthMesh.add(point)
                   let course = courses[i];
-                  // console.log(course);
                   point.userData = course
-                  // console.log(course);
                   point.name = "point"
+
 
                   latlonpoint = calcPosFromLatLonRad(
                     parseFloat(course.lat),parseFloat(course.lng), 0.5, 0
@@ -449,15 +450,39 @@
                   var domEvents	= new THREEx.DomEvents(camera, renderer.domElement)
 
                   meshes.forEach(mesh => {
-                    if (earthMesh) {
-                      console.log("earth Meash")
+                    if(mesh.name !== "point") {
+                      return
                     }
+                    onRenderFcts.push(function(){
+                      // console.log(camera.position.distanceTo(earthMesh.position));
+                      const distance = earthMesh.getWorldPosition().distanceTo(camera.getWorldPosition()) - camera.getWorldPosition().distanceTo(mesh.getWorldPosition())
+                      var opacity;
+                      if (distance > 0.25) {
+                        opacity = 1
+                      } else if (distance < -0.1) {
+                        opacity = 0.1
+                      } else {
+                        opacity = distance + 0.1 * (0.9/0.35) + 0.1
+                      }
+                      // console.log(opacity);
+                        mesh.children.forEach(function(child) {
+                          child.material.opacity = opacity
+                        })
+
+                    })
                     domEvents.addEventListener(mesh, 'mousedown', function(event){
 
-                      // event.stopPropagation()
+                      event.stopPropagation()
                       console.log("I clicked mesh");
-                      if(event.target.name == "point")
-                      console.log(event.target.userData);
+
+                      if(event.target.name == "point") {
+                        searchService.setCourse(event.target.userData)
+                        document.querySelector('.courseInfo').style.display = 'block'
+                        // document.getElementById("MyElement").classList.add('MyClass');
+                        // document.getElementById("MyElement").classList.remove('MyClass');
+                      } else {
+                        return
+                      }
                     }, false)
                   })
 
