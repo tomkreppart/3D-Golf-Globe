@@ -6,15 +6,22 @@
   <div class="imgBox">
     <img class="aerialImg" ng-src="{{$ctrl.course.image}}"/>
   </div>
-  <div class="header">
-    {{$ctrl.course.name}}<span class="ranking">#{{$ctrl.course.ranking}}</span>
+
+  <div class="ranking">#{{$ctrl.course.ranking}}</div>
+
+
+
+  <div class="details">
+    <div class="title">{{$ctrl.course.name}}</div>
+    <div class="location">{{$ctrl.course.city}}, {{$ctrl.course.stateOrProvince}}, {{$ctrl.course.country}}</div>
+    <div class="yearFounded">Founded: {{$ctrl.course.yearFounded}}</div>
+    <div class="par">Par: {{$ctrl.course.par}}</div>
+    <div class="yards">Course Length: {{$ctrl.course.yards}} yards</div>
+    <div class="privateOrPublic">Club Type: {{$ctrl.course.privatOrPublic}}</div>
+    <div class="architects">Architects: {{$ctrl.course.architects}}</div>
+
+    <!-- <div class="description">{{$ctrl.course.description}}</div> -->
   </div>
-  <div class="location">{{$ctrl.course.city}}, {{$ctrl.course.stateOrProvince}}, {{$ctrl.course.country}}</div>
-  <div class="yearFounded">{{$ctrl.course.yearFounded}}</div>
-  <div class="par">{{$ctrl.course.par}}</div>
-  <div class="yards">{{$ctrl.course.yards}}</div>
-  <div class="architects">{{$ctrl.course.architects}}</div>
-  <div class="privateOrPublic">{{$ctrl.course.privateOrPublic}}</div>
-  <div class="description">{{$ctrl.course.description}}</div>
+
   <button class="button" onclick="document.querySelector('.courseInfo').style.display = 'none'">x</button>
 </div>

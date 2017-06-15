@@ -1,8 +1,7 @@
 (function () {
 
     var controller = function ($scope) {
-    //     $scope.allCourseInfo = ;
-        // console.log($scope.courses);
+
     };
 
     controller.$inject = ['$scope'];

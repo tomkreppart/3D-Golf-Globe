@@ -26,16 +26,42 @@
 }
 
 .aerialImg {
-  height: 102vh;
+  height: 106vh;
 }
 
-.header {
+.title {
   font-size: 60px;
-  background-color: hsla(0, 0%, 0%, 0.5);
+  /*color: #fff;
+  background-color: hsla(0, 0%, 0%, 0.5);*/
+  text-shadow: 4px 4px 5px rgba(0, 0, 0, 1);
+  /*position: absolute;
+  top: 3%;
+  left: 5%;*/
 }
 
 .ranking {
-  float: right;
+  font-size: 60px;
+  color: #fff;
+  /*background-color: hsla(0, 0%, 0%, 0.5);*/
+  text-shadow: 4px 4px 5px rgba(0, 0, 0, 1);
+  position: absolute;
+  top: 3.2%;
+  right: 5%;
+}
+
+.details {
+  font-size: 20px;
+  padding: 10px;
+  color: #fff;
+  /*border: 1px solid #000;*/
+  border-radius: 5px;
+  background-color: hsla(0, 0%, 0%, 0.5);
+  text-shadow: 4px 4px 5px rgba(0, 0, 0, 1);
+  position: absolute;
+  top: 3%;
+  left: 5%;
+  /*width: 350px;*/
+
 }
 
 .button {
@@ -43,6 +69,7 @@
   bottom: 0;
   right: 0;
   margin: 10px;
+  background-color: 'red';
 }
 
 /****** NG-CLOAK ******/
