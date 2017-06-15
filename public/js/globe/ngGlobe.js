@@ -395,20 +395,21 @@
                 meshes=[];
 
                 var spriteMap = new THREE.TextureLoader().load( '/js/globe/images/marker-light-green.png' );
-                var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xffffff } );
-                spriteMaterial.depthTest = false
+
                 // var geometry = new THREE.SphereGeometry( 0.01, 8, 8);
                 var geometry = new THREE.BoxGeometry(0.02, 0.075, 0.02);
                 var material = new THREE.MeshBasicMaterial( {color: 0x0000ff, transparent: true, opacity: 0} );
 
 
                 for(var i = 0 ; i < 51 ; i++){
+                  var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xffffff, transparent: true, opacity: 1 } );
+                  spriteMaterial.depthTest = false
                   var cube = new THREE.Mesh( geometry, material );
                   var sprite = new THREE.Sprite( spriteMaterial );
                   sprite.scale.set(0.02, 0.075, 1)
-                  onRenderFcts.push(function(delta, now){
-                    cube.lookAt( camera.position );
-                  })
+                  // onRenderFcts.push(function(delta, now){
+                  //   cube.lookAt( camera.position );
+                  // })
 
                   cube.add(sprite)
 
@@ -449,6 +450,24 @@
                   var domEvents	= new THREEx.DomEvents(camera, renderer.domElement)
 
                   meshes.forEach(mesh => {
+                    if(mesh.name !== "point") {
+                      return
+                    }
+                    onRenderFcts.push(function(){
+                      // console.log(camera.position.distanceTo(earthMesh.position));
+                      const distance = earthMesh.getWorldPosition().distanceTo(camera.getWorldPosition()) - camera.getWorldPosition().distanceTo(mesh.getWorldPosition())
+                      var opacity;
+                      if (distance > 0) {
+                        opacity = 1
+                      } else {
+                        opacity = 0.2
+                      }
+                      // console.log(opacity);
+                        mesh.children.forEach(function(child) {
+                          child.material.opacity = opacity
+                        })
+
+                    })
                     domEvents.addEventListener(mesh, 'mousedown', function(event){
 
                       event.stopPropagation()
