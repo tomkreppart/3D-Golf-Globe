@@ -26,23 +26,91 @@
 }
 
 .aerialImg {
-  height: 102vh;
+  height: 106vh;
 }
 
-.header {
+.title {
   font-size: 60px;
-  background-color: hsla(0, 0%, 0%, 0.5);
+  /*color: #fff;
+  background-color: hsla(0, 0%, 0%, 0.5);*/
+  text-shadow: 4px 4px 5px rgba(0, 0, 0, 1);
+  /*position: absolute;
+  top: 3%;
+  left: 5%;*/
 }
 
 .ranking {
-  float: right;
+  font-size: 60px;
+  color: #fff;
+  /*background-color: hsla(0, 0%, 0%, 0.5);*/
+  text-shadow: 4px 4px 5px rgba(0, 0, 0, 1);
+  position: absolute;
+  top: 3.2%;
+  right: 5%;
+}
+
+.details {
+
+
+
+  /*border: 1px solid #000;*/
+
+  /*background-color: hsla(0, 0%, 0%, 0.6);*/
+
+  /*width: 350px;*/
+
+}
+
+.detailsOne {
+  font-size: 20px;
+  background-color: hsla(0, 0%, 0%, 0.6);
+  padding: 10px;
+  border-radius: 5px;
+  text-shadow: 4px 4px 5px rgba(0, 0, 0, 1);
+  position: absolute;
+  top: 40px;
+  left: 5%;
+  color: #fff;
+}
+
+.detailsTwo {
+  font-size: 20px;
+  margin-top: 10px;
+  background-color: hsla(0, 0%, 0%, 0.6)  ;
+  padding: 10px;
+  border-radius: 5px;
+  text-shadow: 4px 4px 5px rgba(0, 0, 0, 1);
+  position: absolute;
+  top: 220px;
+  left: 5%;
+  color: #fff;
+}
+
+.par {
+  /*padding-top: 20px;*/
+}
+
+.yards, .yearFounded, .privateOrPublic, .architects  {
+  padding-top: 10px;
+}
+
+.architects {
+  /*padding-bottom: 20px;*/
+}
+
+.location {
+  font-size: 30px;
 }
 
 .button {
+  color: #fff;
   position: absolute;
-  bottom: 0;
-  right: 0;
-  margin: 10px;
+  bottom: 40px;
+  left: 5%;
+  /*padding: 5px;*/
+  font-size: 18px;
+  /*margin: 10px;*/
+  background-color: hsla(143, 100%, 40%, 1)
 }
 
 /****** NG-CLOAK ******/

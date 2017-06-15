@@ -6,15 +6,25 @@
   <div class="imgBox">
     <img class="aerialImg" ng-src="{{$ctrl.course.image}}"/>
   </div>
-  <div class="header">
-    {{$ctrl.course.name}}<span class="ranking">#{{$ctrl.course.ranking}}</span>
-  </div>
-  <div class="location">{{$ctrl.course.city}}, {{$ctrl.course.stateOrProvince}}, {{$ctrl.course.country}}</div>
-  <div class="yearFounded">{{$ctrl.course.yearFounded}}</div>
-  <div class="par">{{$ctrl.course.par}}</div>
-  <div class="yards">{{$ctrl.course.yards}}</div>
-  <div class="architects">{{$ctrl.course.architects}}</div>
-  <div class="privateOrPublic">{{$ctrl.course.privateOrPublic}}</div>
-  <div class="description">{{$ctrl.course.description}}</div>
-  <button class="button" onclick="document.querySelector('.courseInfo').style.display = 'none'">x</button>
+
+  <div class="ranking">#{{$ctrl.course.ranking}}</div>
+
+
+
+  <!-- <div class="details"> -->
+    <div class="detailsOne">
+      <div class="title">{{$ctrl.course.name}}</div>
+      <div class="location">{{$ctrl.course.city}}, {{$ctrl.course.stateOrProvince}}, {{$ctrl.course.country}}</div>
+    </div>
+    <div class="detailsTwo">
+      <div class="par">Par {{$ctrl.course.par}}</div>
+      <div class="yards">Length: {{$ctrl.course.yards}} yds</div>
+      <div class="yearFounded">Founded: {{$ctrl.course.yearFounded}}</div>
+      <div class="privateOrPublic">Club Type: {{$ctrl.course.privatOrPublic}}</div>
+      <div class="architects">Architects: {{$ctrl.course.architects}}</div>
+    </div>
+    <!-- <div class="description">{{$ctrl.course.description}}</div> -->
+  <!-- </div> -->
+
+  <button class="button" onclick="document.querySelector('.courseInfo').style.display = 'none'">&#8678; Back To Globe</button>
 </div>
