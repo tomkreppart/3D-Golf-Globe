@@ -457,10 +457,12 @@
                       // console.log(camera.position.distanceTo(earthMesh.position));
                       const distance = earthMesh.getWorldPosition().distanceTo(camera.getWorldPosition()) - camera.getWorldPosition().distanceTo(mesh.getWorldPosition())
                       var opacity;
-                      if (distance > 0) {
+                      if (distance > 0.25) {
                         opacity = 1
+                      } else if (distance < -0.1) {
+                        opacity = 0.1
                       } else {
-                        opacity = 0.2
+                        opacity = distance + 0.1 * (0.9/0.35) + 0.1
                       }
                       // console.log(opacity);
                         mesh.children.forEach(function(child) {
