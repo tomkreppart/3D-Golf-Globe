@@ -7,23 +7,21 @@
     controller.$inject = ['$scope'];
 
     var ngGlobe = function ($state, searchService) {
-      console.log(searchService);
+
         return {
             restrict: 'EA', //E = element, A = attribute, C = class, M = comment
-            scope: {
-                courses: '='
-                //@ reads attribute value, = provides two-way binding, & works w/ functions
+            scope: { // @ reads attribute value, = provides two-way binding, & works w/ functions
+              courses: '='
             },
             template: '',
-            // controller: controller,
+
             link: function ($scope, element, attrs) {
 
               var renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
+
               renderer.setSize( window.innerWidth, window.innerHeight );
-              // document.getElementById("globe").append( renderer.domElement )
               element[0].appendChild( renderer.domElement );
               renderer.shadowMap.enabled	= true
-              // document.addEventListener('mousedown', onDocumentMouseDown, false)
 	            window.addEventListener( 'resize', onWindowResize, false )
 
               var onRenderFcts= [];
@@ -59,13 +57,16 @@
               //////////////////////////////////////////////////////////////////////////////////
               //		Lensflare						//
               //////////////////////////////////////////////////////////////////////////////////
+
               var textureLoader = new THREE.TextureLoader();
               var textureFlare0 = textureLoader.load( "/js/globe/images/lensflare0.png" );
               var textureFlare2 = textureLoader.load( "/js/globe/images/lensflare2.png" );
               var textureFlare3 = textureLoader.load( "/js/globe/images/lensflare3.png" );
+
               addLight( 0.55, 0.9, 0.5, 0, 6.5, -20 );
               addLight( 0.08, 0.8, 0.5, 0, 6.5, -20 );
               addLight( 0.995, 0.5, 0.9, 0, 6.5, -20 );
+
               function addLight( h, s, l, x, y, z ) {
                 var light = new THREE.DirectionalLight( 0xffffff, 0.8, 2000 );
                 light.color.setHSL( h, s, l );
@@ -84,10 +85,6 @@
                 lensFlare.customUpdateCallback = lensFlareUpdateCallback;
                 lensFlare.position.copy( light.position );
                 scene.add( lensFlare );
-                // scene.add( camera );
-                // camera.add(lensFlare);
-                // lensFlare.position.set(-3.5,5.5,-22);
-                // lensFlare.target = camera;
               }
 
               function lensFlareUpdateCallback( object ) {
@@ -107,19 +104,15 @@
                 object.lensFlares[ 3 ].rotation = object.positionScreen.x * 0.5 + THREE.Math.degToRad( 45 );
               }
 
+
               //////////////////////////////////////////////////////////////////////////////////
               //		add Earth Container and make it move					//
               //////////////////////////////////////////////////////////////////////////////////
 
-
-
               var containerEarth	= new THREE.Object3D()
-              // containerEarth.rotateZ(-23.4 * Math.PI/180)
               containerEarth.position.z	= 0
               containerEarth.rotateOnAxis(new THREE.Vector3(0.0, 1.0, 0), -Math.PI/2)
               scene.add(containerEarth)
-
-
 
               var createEarth	= function(){
                 var geometry	= new THREE.SphereGeometry(0.5, 32, 32)
@@ -143,12 +136,10 @@
                 earthMesh.rotation.y += 1/32 * delta;
               })
 
-
               var createEarthCloud	= function() {
                 var geometry	= new THREE.SphereGeometry(0.505, 32, 32)
                 var material	= new THREE.MeshPhongMaterial({
                   map		: THREE.ImageUtils.loadTexture('/js/globe/images/fair_clouds_4k.png'),
-                  // side		: THREE.DoubleSide,
                   transparent	: true,
                   opacity		: 0.8
                 })
@@ -156,9 +147,11 @@
                 return mesh
               }
 
+
               //////////////////////////////////////////////////////////////////////////////////
               //		add Night Lights				//
               //////////////////////////////////////////////////////////////////////////////////
+
               var createNightLights	= function(){
                 var vertexShader	= [
                   'varying vec2 vUv;',
@@ -180,10 +173,10 @@
                   'void main( void ) {',
                     'vec3 color1 = texture2D(texture, vUv).rgb;',
                     'gl_FragColor = vec4(color1, dot(uSplit, vPosition) * 3.0);',
-                    //'gl_FragColor = vec4(dot(uSplit, vPosition) * 2.0, 0, 0, 1);',
                   '}',
                 ].join('\n')
 
+                // create custom material from the shader code above
                 const textureLoader = new THREE.TextureLoader()
 
                 const group = new THREE.Group()
@@ -194,46 +187,21 @@
                 	uSplit: { value: new THREE.Vector3(1, 0, 0) },
                 }
                 uTexture1.texture.value.wrapS = uTexture1.texture.value.wrapT = THREE.RepeatWrapping;
+
                 const material1 = new THREE.ShaderMaterial({
                 	uniforms: uTexture1,
                 	vertexShader: vertexShader,
                 	fragmentShader: fragmentShader,
                 	transparent: true,
                 });
-                const mesh1 = new THREE.Mesh( new THREE.SphereGeometry( 0.502, 32, 32 ), material1 )
+
+                const mesh1 = new THREE.Mesh(new THREE.SphereGeometry( 0.502, 32, 32 ), material1)
                 mesh1.rotateOnAxis(new THREE.Vector3(0.0, 1.0, 0), -Math.PI/2)
                 group.add(mesh1)
-
-                // const uTexture2 = {
-                // 	texture: { value: textureLoader.load("/js/globe/images/earthlights10k.jpg") },
-                // 	uSplit: { value: new THREE.Vector3(0, 0, 1) },
-                // }
-                // uTexture2.texture.value.wrapS = uTexture2.texture.value.wrapT = THREE.RepeatWrapping;
-                // const material2 = new THREE.ShaderMaterial({
-                // 	uniforms: uTexture2,
-                // 	vertexShader: vertexShader,
-                // 	fragmentShader: fragmentShader,
-                // 	transparent: true,
-                // });
-                // const mesh2 = new THREE.Mesh( new THREE.SphereGeometry( 0.502, 32, 32 ), material2 )
-                // // mesh2.rotateOnAxis(new THREE.Vector3(0.0, 1.0, 0), Math.PI/100)
-                // group.add(mesh2)
-
-                // const spotLight = new THREE.SpotLight( 0xffffff );
-                // spotLight.position.set(0, 0, -20);
-                //
-                // spotLight.shadow.camera.near = 500
-                // spotLight.shadow.camera.far = 4000
-                // spotLight.shadow.camera.fov = 30
-                // spotLight.target = mesh1
-
-                // scene.add( spotLight );
-                // scene.add(new THREE.SpotLightHelper(spotLight))
 
                 onRenderFcts.push(function(delta, now){
                   group.rotation.y += 1/32 * delta;
                   material1.uniforms.uSplit.value = material1.uniforms.uSplit.value.applyAxisAngle(new THREE.Vector3(0.0, 1.0, 0), (1/32 * delta)*-1)
-                  // material2.uniforms.uSplit.value = material2.uniforms.uSplit.value.applyAxisAngle(new THREE.Vector3(0.0, 1.0, 0), Math.PI/100)
                 })
               }
 
@@ -247,64 +215,61 @@
               //////////////////////////////////////////////////////////////////////////////////
 
 
-              var createAtmosphereMaterial	= function(){
-              var vertexShader	= [
-                'varying vec3	vVertexWorldPosition;',
-                'varying vec3	vVertexNormal;',
+              var createAtmosphereMaterial	= function() {
+                var vertexShader	= [
+                  'varying vec3	vVertexWorldPosition;',
+                  'varying vec3	vVertexNormal;',
 
-                'void main(){',
-                '	vVertexNormal	= normalize(normalMatrix * normal);',
+                  'void main(){',
+                  '	vVertexNormal	= normalize(normalMatrix * normal);',
 
-                '	vVertexWorldPosition	= (modelMatrix * vec4(position, 1.0)).xyz;',
+                  '	vVertexWorldPosition	= (modelMatrix * vec4(position, 1.0)).xyz;',
 
-                '	// set gl_Position',
-                '	gl_Position	= projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
-                '}',
+                  '	// set gl_Position',
+                  '	gl_Position	= projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+                  '}',
 
+                  ].join('\n')
+                var fragmentShader	= [
+                  'uniform vec3	glowColor;',
+                  'uniform float	coeficient;',
+                  'uniform float	power;',
+
+                  'varying vec3	vVertexNormal;',
+                  'varying vec3	vVertexWorldPosition;',
+
+                  'void main(){',
+                  '	vec3 worldCameraToVertex= vVertexWorldPosition - cameraPosition;',
+                  '	vec3 viewCameraToVertex	= (viewMatrix * vec4(worldCameraToVertex, 0.0)).xyz;',
+                  '	viewCameraToVertex	= normalize(viewCameraToVertex);',
+                  '	float intensity		= pow(coeficient + dot(vVertexNormal, viewCameraToVertex), power);',
+                  '	gl_FragColor		= vec4(glowColor, intensity);',
+                  '}',
                 ].join('\n')
-              var fragmentShader	= [
-                'uniform vec3	glowColor;',
-                'uniform float	coeficient;',
-                'uniform float	power;',
 
-                'varying vec3	vVertexNormal;',
-                'varying vec3	vVertexWorldPosition;',
-
-                'void main(){',
-                '	vec3 worldCameraToVertex= vVertexWorldPosition - cameraPosition;',
-                '	vec3 viewCameraToVertex	= (viewMatrix * vec4(worldCameraToVertex, 0.0)).xyz;',
-                '	viewCameraToVertex	= normalize(viewCameraToVertex);',
-                '	float intensity		= pow(coeficient + dot(vVertexNormal, viewCameraToVertex), power);',
-                '	gl_FragColor		= vec4(glowColor, intensity);',
-                '}',
-              ].join('\n')
-
-              // create custom material from the shader code above
-              //   that is within specially labeled script tags
-              var material	= new THREE.ShaderMaterial({
-                uniforms: {
-                  coeficient	: {
-                    type	: "f",
-                    value	: 1.0
+                // create custom material from the shader code above
+                var material	= new THREE.ShaderMaterial({
+                  uniforms: {
+                    coeficient	: {
+                      type	: "f",
+                      value	: 1.0
+                    },
+                    power		: {
+                      type	: "f",
+                      value	: 2
+                    },
+                    glowColor	: {
+                      type	: "c",
+                      value	: new THREE.Color('pink')
+                    },
                   },
-                  power		: {
-                    type	: "f",
-                    value	: 2
-                  },
-                  glowColor	: {
-                    type	: "c",
-                    value	: new THREE.Color('pink')
-                  },
-                },
-                vertexShader	: vertexShader,
-                fragmentShader	: fragmentShader,
-                //blending	: THREE.AdditiveBlending,
-                transparent	: true,
-                depthWrite	: false,
-              });
-              return material
+                  vertexShader	: vertexShader,
+                  fragmentShader	: fragmentShader,
+                  transparent	: true,
+                  depthWrite	: false,
+                });
+                return material
               }
-
 
               var geometry	= new THREE.SphereGeometry(0.5, 32, 32)
               var material	= createAtmosphereMaterial()
@@ -377,7 +342,7 @@
               //		Data Points							//
               //////////////////////////////////////////////////////////////////////////////////
 
-              function calcPosFromLatLonRad(lat,lon,radius,height){
+              function calcPosFromLatLonRad(lat,lon,radius,height) {
 
                 var phi   = (90-lat)*(Math.PI/180);
                 var theta = (lon+180)*(Math.PI/180);
@@ -389,50 +354,36 @@
                 return [x,y,z];
               }
 
-              var createRandomPoints	= function(){
+              var createRandomPoints	= function() {
 
-                meshes=[];
+                meshes = [];
 
                 var spriteMap = new THREE.TextureLoader().load( '/js/globe/images/marker-light-green.png' );
-
-                // var geometry = new THREE.SphereGeometry( 0.01, 8, 8);
                 var geometry = new THREE.BoxGeometry(0.02, 0.075, 0.02);
                 var material = new THREE.MeshBasicMaterial( {color: 0x0000ff, transparent: true, opacity: 0} );
 
-
-                for(var i = 0 ; i < 51 ; i++){
+                for(var i = 0 ; i < 51 ; i++) {
                   var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xffffff, transparent: true, opacity: 1 } );
                   spriteMaterial.depthTest = false
                   var cube = new THREE.Mesh( geometry, material );
                   var sprite = new THREE.Sprite( spriteMaterial );
                   sprite.scale.set(0.02, 0.075, 1)
-                  // onRenderFcts.push(function(delta, now){
-                  //   cube.lookAt( camera.position );
-                  // })
-
                   cube.add(sprite)
-
-
-                  // sprite.add(box)
                   meshes.push(cube)
-
-
                 }
-                	return meshes
+                return meshes
               }
 
-              function addPoints(){
+              function addPoints() {
                 var courses = $scope.courses
                 var meshes = createRandomPoints();
-                for(var i = 0; i < courses.length; i++ ) {
 
+                for(var i = 0; i < courses.length; i++ ) {
                   var point = meshes[i];
                   earthMesh.add(point)
                   let course = courses[i];
                   point.userData = course
                   point.name = "point"
-
-
                   latlonpoint = calcPosFromLatLonRad(
                     parseFloat(course.lat),parseFloat(course.lng), 0.5, 0
                   );
@@ -444,18 +395,20 @@
               }
 
               $scope.$watch("courses", function(newVal, oldVal) {
+
                 if(newVal && newVal.length) {
                   var meshes = addPoints()
                   var domEvents	= new THREEx.DomEvents(camera, renderer.domElement)
 
                   meshes.forEach(mesh => {
-                    if(mesh.name !== "point") {
+                    if (mesh.name !== "point") {
                       return
                     }
-                    onRenderFcts.push(function(){
-                      // console.log(camera.position.distanceTo(earthMesh.position));
+
+                    onRenderFcts.push(function() {
                       const distance = earthMesh.getWorldPosition().distanceTo(camera.getWorldPosition()) - camera.getWorldPosition().distanceTo(mesh.getWorldPosition())
                       var opacity;
+
                       if (distance > 0.25) {
                         opacity = 1
                       } else if (distance < -0.1) {
@@ -463,55 +416,25 @@
                       } else {
                         opacity = distance + 0.1 * (0.9/0.35) + 0.1
                       }
-                      // console.log(opacity);
-                        mesh.children.forEach(function(child) {
-                          child.material.opacity = opacity
-                        })
-
+                      mesh.children.forEach(function(child) {
+                        child.material.opacity = opacity
+                      })
                     })
-                    domEvents.addEventListener(mesh, 'mousedown', function(event){
 
+                    domEvents.addEventListener(mesh, 'mousedown', function(event) {
                       event.stopPropagation()
-                      console.log("I clicked mesh");
 
                       if(event.target.name == "point") {
                         searchService.setCourse(event.target.userData)
                         document.querySelector('.courseInfo').style.display = 'block'
-                        // document.getElementById("MyElement").classList.add('MyClass');
-                        // document.getElementById("MyElement").classList.remove('MyClass');
                       } else {
                         return
                       }
                     }, false)
-                  })
 
+                  })
                 }
               });
-
-              //////////////////////////////////////////////////////////////////////////////////
-              //		Click Handlers							//
-              //////////////////////////////////////////////////////////////////////////////////
-
-
-
-              // function onDocumentMouseDown(event) {
-              //
-              // 	if (event.target !== renderer.domElement) {
-              // 		return
-              // 	}
-              //   var meshes = createRandomPoints();
-              //
-              //   let vector = new THREE.Vector3(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1, 0.5)
-              // 	let raycaster = new THREE.Raycaster()
-              // 	// raycaster.setFromCamera(vector, camera)
-              //
-              // 	let intersects = raycaster.intersectObjects(meshes, true)
-              //
-              // 	if (intersects.length > 0) {
-              //     // $state.go('courses', {id: 1})
-              //
-              //   }
-              // }
 
               //////////////////////////////////////////////////////////////////////////////////
               //		Camera Controls							//
@@ -525,7 +448,7 @@
 
               function onWindowResize(event) {
 
-                renderer.setSize( window.innerWidth, window.innerHeight )
+                renderer.setSize(window.innerWidth, window.innerHeight)
                 camera.aspect = window.innerWidth / window.innerHeight
                 camera.updateProjectionMatrix()
 
@@ -537,15 +460,14 @@
 
                 function update() {
                 	controls.update();
-                  // cube.update()
                 }
 
               //////////////////////////////////////////////////////////////////////////////////
               //		render the scene						//
               //////////////////////////////////////////////////////////////////////////////////
 
-              onRenderFcts.push(function(){
-                renderer.render( scene, camera );
+              onRenderFcts.push(function() {
+                renderer.render(scene, camera);
                 update()
               })
 
@@ -553,16 +475,16 @@
               //		loop runner							//
               //////////////////////////////////////////////////////////////////////////////////
 
-              var lastTimeMsec= null
-              requestAnimationFrame(function animate(nowMsec){
+              var lastTimeMsec = null
+              requestAnimationFrame(function animate(nowMsec) {
                 // keep looping
-                requestAnimationFrame( animate );
+                requestAnimationFrame(animate);
                 // measure time
                 lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
                 var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
                 lastTimeMsec	= nowMsec
                 // call each update function
-                onRenderFcts.forEach(function(onRenderFct){
+                onRenderFcts.forEach(function(onRenderFct) {
                   onRenderFct(deltaMsec/1000, nowMsec/1000)
                 })
               })
