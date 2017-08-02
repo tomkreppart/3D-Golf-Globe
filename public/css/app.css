@@ -16,10 +16,7 @@
   position: absolute;
   overflow: hidden;
   display: none;
-  /*background-repeat: repeat;
-  background-image: url("../js/globe/images/grass-texture.jpg");*/
 }
-
 
 .imgBox {
   text-align: center;
@@ -31,34 +28,16 @@
 
 .title {
   font-size: 60px;
-  /*color: #fff;
-  background-color: hsla(0, 0%, 0%, 0.5);*/
   text-shadow: 4px 4px 5px rgba(0, 0, 0, 1);
-  /*position: absolute;
-  top: 3%;
-  left: 5%;*/
 }
 
 .ranking {
   font-size: 60px;
   color: #fff;
-  /*background-color: hsla(0, 0%, 0%, 0.5);*/
   text-shadow: 4px 4px 5px rgba(0, 0, 0, 1);
   position: absolute;
   top: 3.2%;
   right: 5%;
-}
-
-.details {
-
-
-
-  /*border: 1px solid #000;*/
-
-  /*background-color: hsla(0, 0%, 0%, 0.6);*/
-
-  /*width: 350px;*/
-
 }
 
 .detailsOne {
@@ -86,16 +65,8 @@
   color: #fff;
 }
 
-.par {
-  /*padding-top: 20px;*/
-}
-
 .yards, .yearFounded, .privateOrPublic, .architects  {
   padding-top: 10px;
-}
-
-.architects {
-  /*padding-bottom: 20px;*/
 }
 
 .location {
@@ -107,10 +78,8 @@
   position: absolute;
   bottom: 40px;
   left: 5%;
-  /*padding: 5px;*/
   font-size: 18px;
-  /*margin: 10px;*/
-  background-color: hsla(143, 100%, 40%, 1)
+  background-color: hsla(143, 100%, 40%, 1);
 }
 
 /****** NG-CLOAK ******/
@@ -121,7 +90,7 @@
 
 /****** LOADER ******/
 
-.loader-bg {
+/*.loader-bg {
   height: 100vh;
   width: 100vw;
   background-image: radial-gradient(circle farthest-corner at center, #3C4B57 0%, #1C262B 100%);
@@ -193,4 +162,4 @@
   100% {
     transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
   }
-}
+}*/
